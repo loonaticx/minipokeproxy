@@ -1,13 +1,22 @@
 import React, {useRef, useState} from "react";
 import html2canvas from "html2canvas";
 
+function countIdenticalElements<T>(arr: T[]): Map<T, number> {
+    const counts: Map<T, number> = {};
+    for (const element of arr) {
+        counts[element] = (counts[element] || 0) + 1;
+    }
+    return counts;
+}
+
 const PokemonCard = ({data}) => {
     const cardRef = useRef(null);
     const [imageSrc, setImageSrc] = useState(null);
 
     if (!data) return <p>Loading...</p>;
 
-    const {name, hp, types, attacks} = data;
+    const {name, hp, types, attacks, weaknesses, retreatCost} = data;
+    const retreatElements = countIdenticalElements(retreatCost);
 
     const generateImage = () => {
         if (!cardRef.current) return;
@@ -61,6 +70,11 @@ const PokemonCard = ({data}) => {
                         </div>
                     ))}
                 </div>
+                {Object.entries(retreatElements).map(([type, count]) => (
+                    <p key={type} style={{fontSize: "14px", color: "#555"}}>
+                        Retreat Cost: {count} {type}
+                    </p>
+                ))}
             </div>
             <button
                 onClick={generateImage}
@@ -108,6 +122,18 @@ const sampleData = {
             damage: "90",
             text: "Heal 30 damage from this Pokémon."
         }
+    ],
+    weaknesses: [
+        {
+            type: "Fire",
+            value: "×2"
+        }
+    ],
+    retreatCost: [
+        "Colorless",
+        "Colorless",
+        "Colorless",
+        "Colorless"
     ]
 };
 
