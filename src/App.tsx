@@ -15,7 +15,9 @@ const PokemonCard = ({data}) => {
             html2canvas(cardRef.current, {
                 backgroundColor: "#ffffff", // Ensure background is not transparent
                 useCORS: true,
-                scale: 2, // Improves quality
+                // width:736,
+                // height:1024,
+                scale: 1, // note:CSS px below is messed up cuz they are not relative to the above dimensions
             }).then((canvas) => {
                 setImageSrc(canvas.toDataURL("image/png"));
             });
@@ -27,27 +29,29 @@ const PokemonCard = ({data}) => {
             <div
                 ref={cardRef}
                 style={{
-                    border: "2px solid #333",
-                    padding: "16px",
-                    maxWidth: "300px",
-                    borderRadius: "10px",
-                    boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)",
+                    // border: "2px solid #333",
+                    // padding: "16em",
+                    // maxWidth: "300px",
+                    // borderRadius: "10px",
+                    // boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)",
+                    width: "736px",
+                    height: "1024px",
                     backgroundColor: "white",
                     color: "black",
                     textAlign: "center",
                     fontFamily: "Arial, sans-serif",
                 }}
             >
-                <h1 style={{fontSize: "20px", fontWeight: "bold"}}>{name} - HP {hp}</h1>
-                <p style={{fontSize: "14px", color: "#555"}}>Type: {types.join(", ")}</p>
+                <h1 style={{fontSize: "4em", fontWeight: "bold"}}>{name} - HP {hp}</h1>
+                <p style={{fontSize: "3em", color: "#555"}}>Type: {types.join(", ")}</p>
                 <div style={{marginTop: "10px"}}>
                     <h2 style={{fontSize: "16px", fontWeight: "bold"}}>Attacks:</h2>
                     {attacks.map((attack, index) => (
                         <div key={index} style={{
-                            marginTop: "8px",
-                            padding: "8px",
+                            marginTop: "1em",
+                            padding: "1em",
                             border: "1px solid #ccc",
-                            borderRadius: "6px",
+                            borderRadius: "1em",
                             backgroundColor: "#f9f9f9"
                         }}>
                             <p style={{fontWeight: "bold"}}>{attack.name}</p>
@@ -114,7 +118,7 @@ export default function App() {
             justifyContent: "center",
             alignItems: "center",
             height: "100vh",
-            backgroundColor: "#f0f0f0"
+            backgroundColor: "#6e6e6e"
         }}>
             <PokemonCard data={sampleData}/>
         </div>
