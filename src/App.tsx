@@ -1,4 +1,3 @@
-import React, {useRef, useState} from "react";
 import React, {useRef, useState, useEffect} from "react";
 import html2canvas from "html2canvas";
 
@@ -19,8 +18,9 @@ const PokemonCard = ({data}) => {
 
     if (!data) return <p>Loading...</p>;
 
-    const {name, hp, types, attacks, weaknesses, retreatCost} = data;
-    const retreatElements = countIdenticalElements(retreatCost);
+    console.log(data)
+    const retreatElements = countIdenticalElements(data.retreatCost);
+    const isPokemon = data.supertype && data.supertype == "Pokémon"
 
     const generateImage = () => {
         if (!cardRef.current) return;
@@ -28,9 +28,7 @@ const PokemonCard = ({data}) => {
             html2canvas(cardRef.current, {
                 backgroundColor: "#ffffff", // Ensure background is not transparent
                 useCORS: true,
-                // width:736,
-                // height:1024,
-                scale: 1, // note:CSS px below is messed up cuz they are not relative to the above dimensions
+                scale: 1,
             }).then((canvas) => {
                 setImageSrc(canvas.toDataURL("image/png"));
             });
@@ -42,11 +40,6 @@ const PokemonCard = ({data}) => {
             <div
                 ref={cardRef}
                 style={{
-                    // border: "2px solid #333",
-                    // padding: "16em",
-                    // maxWidth: "300px",
-                    // borderRadius: "10px",
-                    // boxShadow: "4px 4px 10px rgba(0, 0, 0, 0.2)",
                     width: "736px",
                     height: "1024px",
                     backgroundColor: "white",
@@ -55,30 +48,162 @@ const PokemonCard = ({data}) => {
                     fontFamily: "Arial, sans-serif",
                 }}
             >
-                <h1 style={{fontSize: "4em", fontWeight: "bold"}}>{name} - HP {hp}</h1>
-                <p style={{fontSize: "3em", color: "#555"}}>Type: {types.join(", ")}</p>
-                <div style={{marginTop: "10px"}}>
-                    <h2 style={{fontSize: "16px", fontWeight: "bold"}}>Attacks:</h2>
-                    {attacks.map((attack, index) => (
-                        <div key={index} style={{
-                            marginTop: "1em",
-                            padding: "1em",
+                {/*<h1 style={{margin: "0.1em", padding:"0em", fontSize: "4em", fontWeight: "bold"}}>{data.name} - HP {data.hp}</h1>*/}
+
+                {/* Pokemon Type Frame */}
+                {/*<p style={{margin: "0em", fontSize: "3em", color: "#555"}}>Type: {data.types.join(", ")}</p>*/}
+
+                <div style={{
+                    display: "inline-flex",
+                    flexWrap: "wrap",
+                    flexShrink: "1",
+                    justifyContent: "flex-start",
+                    padding: "0em",
+                }}>
+                    <div style={{
+                        fontSize: "1.25em",
+                        margin: "1em",
+                        padding: "0em",
+                        display: "flex",
+
+                    }}>
+                        <p><strong>HP:</strong> {data.hp}</p>
+                        <div style={{
+                            padding: "0em",
+                            borderRadius: "1em",
+                            margin: "0em",
+                        }}>
+                            <h2 style={{
+                                fontSize: "2em",
+                                padding: "0em",
+                                margin: "0em",
+                                fontWeight: "bold"
+                            }}>{data.name}</h2>
+                        </div>
+                        <p><strong>Type:</strong> {data.types.join(", ")}</p>
+
+                    </div>
+                </div>
+
+                {/* Rulebox Frame */}
+                {data.rules && data.rules.length > 0 && (
+                    <div style={{
+                        padding: "0em",
+                        border: "1px solid #ccc",
+                        borderRadius: "1em",
+                        margin: "0em",
+                        backgroundColor: "#e0e0e0"
+                    }}>
+                        <h2 style={{fontSize: "2em", padding: "0em", margin: "0em", fontWeight: "bold"}}>Rules</h2>
+                        {data.rules.map((rule, index) => (
+                            <div key={index} style={{
+                                marginTop: "0em",
+                                border: "1px solid #ccc",
+                                borderRadius: "1em",
+                                backgroundColor: "#f9f9f9"
+                            }}>
+                                <p style={{fontSize: "1.5em"}}>{rule}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Attack Frame */}
+                {data.attacks && data.attacks.length > 0 && (
+                    <div style={{
+                        padding: "0em",
+                        border: "1px solid #ccc",
+                        borderRadius: "1em",
+                        margin: "0em",
+                        backgroundColor: "#e0e0e0"
+                    }}>
+                        <h2 style={{fontSize: "2em", padding: "0em", margin: "0em", fontWeight: "bold"}}>Attacks</h2>
+                        {data.attacks.map((attack, index) => (
+                            <div key={index} style={{
+                                padding: "0em",
+                                border: "1px solid #ccc",
+                                borderRadius: "1em",
+                                backgroundColor: "#f9f9f9"
+                            }}>
+                                <p style={{fontSize: "1.25em", margin: "1em", fontWeight: "bold"}}>{attack.name}</p>
+                                <p><strong>Cost:</strong> {attack.cost.join(", ")}</p>
+                                <p><strong>Damage:</strong> {attack.damage}</p>
+                                <p style={{fontSize: "1em", color: "#666"}}>{attack.text}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                <div id="Weakness/Resistance Container" style={{
+                    padding: "0em",
+                    border: "1px solid #ccc",
+                    borderRadius: "1em",
+                    margin: "0em",
+                    // backgroundColor: "#bb2323",
+                    display: "inline-flex",
+                    flexWrap: "wrap",
+                    flexShrink: "1",
+                    justifyContent: "flex-start"
+                }}>
+                    {/* Weakness Frame */}
+                    {data.weaknesses && data.weaknesses.length > 0 && (
+                        <div style={{
+                            padding: "0em",
                             border: "1px solid #ccc",
                             borderRadius: "1em",
-                            backgroundColor: "#f9f9f9"
+                            backgroundColor: "#e0e0e0"
                         }}>
-                            <p style={{fontWeight: "bold"}}>{attack.name}</p>
-                            <p>Cost: {attack.cost.join(", ")}</p>
-                            <p>Damage: {attack.damage}</p>
-                            <p style={{fontSize: "12px", color: "#666"}}>{attack.text}</p>
+                            <h2 style={{fontSize: "1.5em", fontWeight: "bold", margin: "0em"}}>Weakness</h2>
+                            {data.weaknesses.map((weakness, index) => (
+                                <div key={index} style={{
+                                    marginTop: "0.2em",
+                                    padding: "0.1em",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "1em",
+                                    backgroundColor: "#f9f9f9"
+                                }}>
+                                    <p>{weakness.type} {weakness.value}</p>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    )}
+
+                    {/* Resistance Frame */}
+                    {data.resistances && data.resistances.length > 0 && (
+                        <div style={{
+                            padding: "0em",
+                            border: "1px solid #ccc",
+                            borderRadius: "1em",
+                            backgroundColor: "#e0e0e0"
+                        }}>
+                            <h2 style={{fontSize: "1.5em", fontWeight: "bold", margin: "0em"}}>Resistance</h2>
+                            {data.resistances.map((resistance, index) => (
+                                <div key={index} style={{
+                                    marginTop: "0.2em",
+                                    padding: "0.1em",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "1em",
+                                    backgroundColor: "#f9f9f9"
+                                }}>
+                                    <p>{resistance.type} {resistance.value}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
+
+                {/* Retreat Cost Frame */}
                 {Object.entries(retreatElements).map(([type, count]) => (
                     <p key={type} style={{fontSize: "14px", color: "#555"}}>
-                        Retreat Cost: {count} {type}
+                        <strong>Retreat Cost:</strong> {count} {type}
                     </p>
                 ))}
+
+                {/* Card/Set ID Frame */}
+                <div>
+                    <p style={{fontSize: "2em", padding: "0em", margin: "0em"}}>ID: {data.id}</p>
+                </div>
+
             </div>
             <button
                 onClick={generateImage}
