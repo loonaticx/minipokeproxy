@@ -81,9 +81,38 @@ const PokemonCard = ({data}) => {
                             }}>{data.name}</h2>
                         </div>
                         <p><strong>Type:</strong> {data.types.join(", ")}</p>
-
                     </div>
+
                 </div>
+
+                {/*  Subtypes frame  */}
+                {data.subtypes && data.subtypes.length > 0 && (
+                    <div style={{
+                        padding: "0em",
+                        // border: "1px solid #ccc",
+                        borderRadius: "1em",
+                        backgroundColor: "#e0e0e0",
+                        display: "block",
+
+                    }}>
+                        <h2 style={{fontSize: "1.5em", fontWeight: "bold", margin: "0em"}}>Subtypes</h2>
+                        {data.subtypes.map((subtype, index) => (
+                            <div key={index} style={{
+                                marginTop: "0.2em",
+                                padding: "0.1em",
+                                border: "1px solid #ccc",
+                                borderRadius: "1em",
+                                backgroundColor: "#f9f9f9",
+                                display: "inline-flex",
+                                flexWrap: "wrap",
+                                flexShrink: "1",
+                                justifyContent: "flex-start"
+                            }}>
+                                <p>{subtype}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
 
                 {/* Rulebox Frame */}
                 {data.rules && data.rules.length > 0 && (
@@ -103,6 +132,32 @@ const PokemonCard = ({data}) => {
                                 backgroundColor: "#f9f9f9"
                             }}>
                                 <p style={{fontSize: "1.5em"}}>{rule}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Ability Frame */}
+                {data.abilities && data.abilities.length > 0 && (
+                    <div style={{
+                        padding: "0em",
+                        border: "1px solid #ccc",
+                        borderRadius: "1em",
+                        margin: "0em",
+                        backgroundColor: "#e0e0e0"
+                    }}>
+                        <h2 style={{fontSize: "2em", padding: "0em", margin: "0em", fontWeight: "bold"}}>Abilities</h2>
+                        {data.abilities.map((ability, index) => (
+                            <div key={index} style={{
+                                padding: "0em",
+                                border: "1px solid #ccc",
+                                borderRadius: "1em",
+                                backgroundColor: "#f9f9f9"
+                            }}>
+                                <p style={{fontSize: "1.25em", margin: "1em", fontWeight: "bold"}}>
+                                    <strong>{ability.type}:</strong> {ability.name}
+                                </p>
+                                <p>{ability.text}</p>
                             </div>
                         ))}
                     </div>
@@ -169,6 +224,7 @@ const PokemonCard = ({data}) => {
                     )}
 
                     {/* Resistance Frame */}
+                    {/* TODO: If no resistance, still include box, but say NONE. */}
                     {data.resistances && data.resistances.length > 0 && (
                         <div style={{
                             padding: "0em",
@@ -194,7 +250,7 @@ const PokemonCard = ({data}) => {
 
                 {/* Retreat Cost Frame */}
                 {Object.entries(retreatElements).map(([type, count]) => (
-                    <p key={type} style={{fontSize: "14px", color: "#555"}}>
+                    <p key={type} style={{fontSize: "1.25em", color: "#555"}}>
                         <strong>Retreat Cost:</strong> {count} {type}
                     </p>
                 ))}
@@ -239,7 +295,7 @@ export default function App() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("https://api.pokemontcg.io/v2/cards/xy1-79", {
+                const response = await fetch("https://api.pokemontcg.io/v2/cards/sv7-1", {
                     headers: {
                         "Authorization": `Bearer ${apiKey}`
                     }
