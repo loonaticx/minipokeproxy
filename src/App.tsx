@@ -1,5 +1,9 @@
 import React, {useRef, useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import html2canvas from "html2canvas";
+
+const apiKey = import.meta.env.VITE_POKEMON_API_KEY;
+
 
 function countIdenticalElements<T>(arr: T[]): Map<T, number> {
     const counts: Map<T, number> = {};
@@ -105,39 +109,25 @@ const PokemonCard = ({data}) => {
     );
 };
 
-const sampleData = {
-    name: "Venusaur-EX",
-    hp: "180",
-    types: ["Grass"],
-    attacks: [
-        {
-            name: "Poison Powder",
-            cost: ["Grass", "Colorless", "Colorless"],
-            damage: "60",
-            text: "Your opponent's Active Pokémon is now Poisoned."
-        },
-        {
-            name: "Jungle Hammer",
-            cost: ["Grass", "Grass", "Colorless", "Colorless"],
-            damage: "90",
-            text: "Heal 30 damage from this Pokémon."
-        }
-    ],
-    weaknesses: [
-        {
-            type: "Fire",
-            value: "×2"
-        }
-    ],
-    retreatCost: [
-        "Colorless",
-        "Colorless",
-        "Colorless",
-        "Colorless"
-    ]
-};
-
 export default function App() {
+    const [cardData, setCardData] = useState(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch("https://api.pokemontcg.io/v2/cards/xy1-79", {
+                    headers: {
+                        "Authorization": `Bearer ${apiKey}`
+                    }
+                });
+                const json = await response.json();
+                setCardData(json.data);
+            } catch (error) {
+                console.error("Error fetching card data:", error);
+            }
+        };
+        fetchData();
+    }, []);
+
     return (
         <div style={{
             display: "flex",
@@ -146,7 +136,7 @@ export default function App() {
             height: "100vh",
             backgroundColor: "#6e6e6e"
         }}>
-            <PokemonCard data={sampleData}/>
+            <PokemonCard data={cardData}/>
         </div>
     );
 }
